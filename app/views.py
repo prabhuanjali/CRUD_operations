@@ -2,9 +2,25 @@ from django.shortcuts import render
 
 # Create your views here.
 from app.models import *
+from django.db.models.functions import Length
 
 def display_topics(request):
     QSTO= Topic.objects.all()
+
+    #Exclude method
+    QSTO=Topic.objects.exclude(topic_name='Cricket')
+
+
+    #order-by Ascending and Descending order
+    QSTO=Topic.objects.all().order_by("topic_name")
+    QSTO=Topic.objects.all().order_by("-topic_name")
+
+
+    #order-by Ascending and Descending based on length
+    QSTO=Topic.objects.all().order_by(Length("topic_name"))
+    QSTO=Topic.objects.all().order_by(Length("topic_name").desc())
+
+
 
     d={'QSTO':QSTO}
 
@@ -12,6 +28,19 @@ def display_topics(request):
 
 def display_webpages(request):
     QSWO=WebPage.objects.all()
+
+    #Exclude Method
+    QSWO=WebPage.objects.exclude(topic_name='Cricket')
+
+    #StartsWith Lookup Field
+    QSWO=WebPage.objects.filter(name__startswith='V')
+
+    #EndsWith Lookup Field
+    QSWO=WebPage.objects.filter(name__endswith='a')
+
+    #Contains LookUp Field
+    QSWO=WebPage.objects.filter(name__contains='a')
+
     d={'QSWO':QSWO}
 
     return render(request,'display_webpages.html',d)
@@ -19,11 +48,8 @@ def display_webpages(request):
 
 def display_Access(request):
     QSAO=Access_Record.objects.all()
-
     d={'QSAO':QSAO}
-
     return render(request,'display_Access.html',d)
-
 
 
 def insert_topic(request):
